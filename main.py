@@ -14,7 +14,6 @@ class Output(BaseModel):
 roulette_agent = Agent(  
     'openai:gpt-4o',
     result_type=Output,
-
     system_prompt=(
         """
 You are a senior technical analyst.
