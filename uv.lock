@@ -548,6 +548,7 @@ dependencies = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "pydantic-ai", specifier = ">=0.0.46" },
+    { name = "uvicorn", specifier = ">=0.34.0" },
 ]
 
 [[package]]
