@@ -5,11 +5,17 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 from typing import Literal
 
+import logfire
+
 from src.agents.prompts import (
     DAILY_ANALYST_PROMPT,
     WEEKLY_ANALYST_PROMPT,
     SUPERVISOR_PROMPT,
+    HOURLY_ANALYST_PROMPT,
 )
+
+logfire.configure()
+Agent.instrument_all()
 
 
 class Output(BaseModel):
@@ -32,6 +38,19 @@ class Deps:
 
 class Agents:
     def __init__(self):
+        self.hourly_analyst = Agent(
+            "openai:gpt-4o",
+            result_type=Output,
+            system_prompt=HOURLY_ANALYST_PROMPT,
+            tools=[
+                Tool(
+                    name="call_supervisor",
+                    description="Call the supervisor to get a final verdict",
+                    function=self.call_supervisor,
+                )
+            ],
+        )
+
         self.daily_analyst = Agent(
             "openai:gpt-4o",
             result_type=Output,
@@ -58,28 +77,27 @@ class Agents:
             ],
         )
 
-        self.hourly_analyst = Agent(
-            "openai:gpt-4o",
-            result_type=Output,
-            system_prompt=(
-                """
-                You are a senior technical analyst.
-                """
-            ),
-            tools=[
-                Tool(
-                    name="call_supervisor",
-                    description="Call the supervisor to get a final verdict",
-                    function=self.call_supervisor,
-                )
-            ],
-        )
-
         self.supervisor = Agent(
             "openai:gpt-4o",
-            # result_type=Output,
             system_prompt=SUPERVISOR_PROMPT,
         )
+
+    async def run_hourly_analysis(self, image: UploadFile) -> Output:
+        print("Running hourly analysis")
+
+        file_content = await image.read()
+
+        deps = Deps(image_data=file_content)
+
+        response = await self.hourly_analyst.run(
+            [
+                "Here is the hourly chart",
+                BinaryContent(file_content, media_type="image/png"),
+            ],
+            deps=deps,
+        )
+        print("Hourly analyst response: ", response.data)
+        return response.data
 
     async def run_daily_analysis(self, image: UploadFile) -> Output:
         print("Running daily analysis")
@@ -96,6 +114,23 @@ class Agents:
             deps=deps,
         )
         print("Daily analyst response: ", response.data)
+        return response.data
+
+    async def run_weekly_analysis(self, image: UploadFile) -> Output:
+        print("Running weekly analysis")
+
+        file_content = await image.read()
+
+        deps = Deps(image_data=file_content)
+
+        response = await self.weekly_analyst.run(
+            [
+                "Here is the weekly chart",
+                BinaryContent(file_content, media_type="image/png"),
+            ],
+            deps=deps,
+        )
+        print("Weekly analyst response: ", response.data)
         return response.data
 
     # Tool function
