@@ -9,4 +9,6 @@ dependencies = [
     "pydantic-ai[logfire]>=0.0.46",
     "python-multipart>=0.0.20",
     "uvicorn>=0.34.0",
+    "streamlit>=1.32.0",
+    "requests>=2.31.0",
 ]
