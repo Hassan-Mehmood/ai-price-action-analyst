@@ -36,5 +36,6 @@ app.include_router(analysis_router)
 
 @app.get("/health")
 async def health_check():
+    print("Health check endpoint called")
     return {"status": "healthy"}
 
