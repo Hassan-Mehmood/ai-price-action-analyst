@@ -15,15 +15,6 @@ The application uses a sophisticated multi-agent system:
 3. **Weekly Analyst**: Provides insights from weekly price movements
 4. **Supervisor Agent**: Reviews and validates the analysis from other agents
 
-Each analyst agent is trained to:
-- Identify optimal entry and exit points
-- Analyze trends and price movements
-- Identify key support and resistance levels
-- Detect liquidity grabs, traps, and fakeouts
-- Provide actionable trading insights
-
-The supervisor agent ensures the quality and consistency of the analysis by reviewing the recommendations from the analysts.
-
 ## Features
 
 - Multi-timeframe analysis (Hourly, Daily, Weekly)
