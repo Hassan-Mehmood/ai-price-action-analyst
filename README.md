@@ -66,9 +66,6 @@ The application uses a sophisticated multi-agent system:
 
 ### Running the Application
 
-The application consists of two parts:
-
-1. **Backend API Server**:
    ```bash
    uv run main.py
    ```
